@@ -67,6 +67,7 @@ if not os.path.exists(src_path):
 else:
     print('clear pycache')
     [ shutil.rmtree(f) for f in glob.glob(f"{src_path}/**/__pycache__", recursive=True) ] 
+    [ shutil.rmtree(f) for f in glob.glob(f"{src_path}/**/*.pyc", recursive=True) ] 
 
 # backup the old one with time if the source path is same with the destination path or the backup option is enable
 if (src_path==dst_path) or backup_path :
