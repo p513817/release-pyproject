@@ -69,9 +69,9 @@ else:
     [ shutil.rmtree(f) for f in glob.glob(f"{src_path}/**/__pycache__", recursive=True) ] 
 
 # backup the old one with time if the source path is same with the destination path or the backup option is enable
-if (src_path==dst_path):
+if (src_path==dst_path or backup_path):
     print('backup the original file, because the original path and the destination path is the same.')
-    backup_path = './backup'
+    backup_path = './backup' if backup_path==None else backup_path
     if not os.path.exists(backup_path): os.makedirs(backup_path)
     shutil.copytree(src_path, os.path.join(backup_path, "{}_backup_{}".format(os.path.basename(src_path), get_time(+8) )))
     
