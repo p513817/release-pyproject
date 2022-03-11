@@ -1,6 +1,8 @@
 # release-py-project
+package python API to dynamic shared objects
 
-Package python API to dynamic shared objects
+* [Build the shared object from the python API (demo).](#Build-the-shared-object-from-the-python-API-(demo).)
+* [Compress whole python project](#Compress-whole-python-project)
 
 # Feature
 1. Package the project to a new one but will not confuse the original one.
@@ -13,34 +15,7 @@ apt-get update && apt-get install zip -y
 pip3 install Cython
 ```
 
-# Help
-* `setup.py`
-    ```bash
-    $ python setup.py build_ext --inplace --src <the_source_path> [Options]
-    #-----------------------------------------------------------------
-    [Options]
-    --dst       if not provide the destination path, will backup and replace the original one.
-    --backup    if you want backup the original file, you can setup the backup path.
-    --build     change the path of build folder, the default is './build'
-    ```
-* `release.sh`
-    ```bash
-    $ ./release.sh -h
-    #-----------------------------------------------------------------
-    Package whole project and replace the python api to shared object
-
-    $ ./release.sh [OPTION]
-
-    [OPTION]
-    -r  the root to the project
-    -a  the path of the python API in target project which will be converted to dynamic shared objects.
-    -z  compress the release project, default is True
-    -e  exclude files, like "data;.git;.gitignore"
-
-    [Example]
-    $ ./release.sh -r ../demo -a ../demo -e "data;.git;.gitignore"
-    ```
-# Build the shared object from the python API
+# Build the shared object.
 * Place this repo next to the target project.
     ```bash
     $ ls .. | grep -e demo -e release
@@ -86,7 +61,7 @@ pip3 install Cython
 
     9 directories, 18 files
     ```
-# Compress whole project with `release.sh`
+# Compress whole python project
 * Check file structure  
     ```bash
     $ ls
@@ -120,6 +95,32 @@ pip3 install Cython
     4 directories, 8 files
     ```
 
+# Help
+* `setup.py`
+    ```bash
+    $ python setup.py -h
+    #-----------------------------------------------------------------
+    $ python setup.py build_ext --inplace --src <the_source_path> [Options]
+
+    [Options]
+    --dst       if not provide the destination path, will backup and replace the original one.
+    --backup    if you want backup the original file, you can setup the backup path.
+    --build     change the path of build folder, the default is './build'
+    ```
+* `release.sh`
+    ```bash
+    $ ./release.sh -h
+    #-----------------------------------------------------------------
+    Package whole project and replace the python api to shared object
+
+    $ ./release.sh [OPTION]
+
+    [OPTION]
+    -r  the root to the project
+    -a  the path of the python API in target project which will be converted to dynamic shared objects.
+    -z  compress the release project, default is True
+    -e  exclude files, like "data;.git;.gitignore"
+    ```
 
 # Feature
 [　] Distribute a Python package with a compiled dynamic shared library.
