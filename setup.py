@@ -41,7 +41,7 @@ def helper():
         "",
         "[Options]",
         "--dst       if not provide the destination path, will backup and replace the original one.",
-        "--backup    change the backup path, the default is './backup'",
+        "--backup    if you want backup the original file, you can setup the backup path.",
         "--build     change the path of build folder, the default is './build'",
         "" ]
     [print(i) for i in info]
@@ -58,7 +58,7 @@ if not (('build_ext' in args) and ('--inplace' in args) and ('--src' in args)) o
 print('parse custom option')
 src_path = get_args(args, '--src') 
 dst_path = get_args(args, '--dst', src_path)                   
-backup_path = get_args(args, '--backup', './backup') 
+backup_path = get_args(args, '--backup') 
 build_path = os.path.normpath(get_args(args, '--build', './build') )
 
 # if the source is exists, clear pycahe folder
@@ -67,16 +67,15 @@ if not os.path.exists(src_path):
 else:
     print('clear pycache')
     [ shutil.rmtree(f) for f in glob.glob(f"{src_path}/**/__pycache__", recursive=True) ] 
-    [ shutil.rmtree(f) for f in glob.glob(f"{src_path}/**/*.pyc", recursive=True) ] 
 
 # backup the old one with time if the source path is same with the destination path or the backup option is enable
-if (src_path==dst_path) or backup_path :
-    print('backup the original file')
+if (src_path==dst_path):
+    print('backup the original file, because the original path and the destination path is the same.')
+    backup_path = './backup'
     if not os.path.exists(backup_path): os.makedirs(backup_path)
     shutil.copytree(src_path, os.path.join(backup_path, "{}_backup_{}".format(os.path.basename(src_path), get_time(+8) )))
     
 # create a temp_dst for setup.py if the source path is not same with the destination path
-
 temp_dst = os.path.join( os.getcwd(), '{}'.format(os.path.basename(dst_path)) )
 
 if src_path != temp_dst:
@@ -87,7 +86,7 @@ if src_path != temp_dst:
 # cpature all python files but exclude __init__.py
 print('start package')
 extensions = [ f for f in glob.glob(f"{temp_dst}/**/*.py", recursive=True) if not ("__init__" in f) ]
-print(extensions)
+
 setup(
     name=temp_dst,
     ext_modules=cythonize(extensions),
@@ -106,13 +105,11 @@ for f in glob.glob(f"{temp_dst}/**/*.so", recursive=True):
     os.rename(f, trg_f)
     print(os.path.basename(f), " -> ", os.path.basename(trg_f))
 
-# # overwrite
-if src_path != temp_dst:
+# overwrite
+if dst_path != temp_dst:
     if os.path.exists(dst_path):
         shutil.rmtree(dst_path)
-    # shutil.copytree(temp_dst, dst_path, dirs_exist_ok=True)
     shutil.move(temp_dst, dst_path)
 
-# remove 
-[ shutil.rmtree(path) for path in [build_path, temp_dst] if os.path.exists(path) ]
-
+# remove something like build folder
+[ shutil.rmtree(path) for path in [build_path] if os.path.exists(path) ]
